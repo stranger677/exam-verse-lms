@@ -3,10 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { 
   BookOpen, 
@@ -14,11 +11,8 @@ import {
   Clock, 
   FileText, 
   Award,
-  Bell,
   User,
   LogOut,
-  CheckCircle,
-  AlertTriangle,
   GraduationCap,
   Menu,
   Search,
@@ -26,15 +20,13 @@ import {
   Home,
   Settings,
   Plus,
-  Edit,
-  Eye,
-  Trash2
+  Edit
 } from "lucide-react";
 import ExamManager from './ExamManager';
 import InstructorCreateExam from './InstructorCreateExam';
 import InstructorManageExams from './InstructorManageExams';
-import StudentManagementPage from './StudentManagementPage';
-import AnnouncementPage from './AnnouncementPage';
+import InstructorCourseListPage from './InstructorCourseListPage';
+import GradeManagementPage from './GradeManagementPage';
 import AssignmentManagementPage from './AssignmentManagementPage';
 
 interface InstructorDashboardProps {
@@ -46,21 +38,18 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
   const [showProfile, setShowProfile] = useState(false);
   const [currentView, setCurrentView] = useState<string>('dashboard');
   const [selectedExam, setSelectedExam] = useState<any>(null);
-  const [showCreateAssignment, setShowCreateAssignment] = useState(false);
+
   // Dummy data for instructor dashboard
   const courses = [
     { id: 1, name: "Advanced Mathematics", code: "MATH301", students: 45, assignments: 8, exams: 3 },
     { id: 2, name: "Linear Algebra", code: "MATH201", students: 38, assignments: 6, exams: 2 },
     { id: 3, name: "Calculus II", code: "MATH102", students: 52, assignments: 10, exams: 4 }
   ];
+
   const recentActivity = [
     { id: 1, action: "New assignment submitted", course: "MATH301", time: "2 hours ago", type: "assignment" },
     { id: 2, action: "Exam completed by 28 students", course: "MATH201", time: "1 day ago", type: "exam" },
     { id: 3, action: "Course material uploaded", course: "MATH102", time: "2 days ago", type: "material" }
-  ];
-  const upcomingExams = [
-    { id: 1, title: "Midterm Exam", course: "MATH301", date: "2024-06-20", students: 45 },
-    { id: 2, title: "Final Assessment", course: "MATH201", date: "2024-06-25", students: 38 }
   ];
 
   const handleNavigateToExams = () => {
@@ -70,6 +59,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
   const handleCreateExam = () => {
     setCurrentView('create-exam');
   };
+
   const handleManageExams = () => {
     setCurrentView('manage-exams');
   };
@@ -84,16 +74,16 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
     setCurrentView('edit-exam');
   };
 
-  const handleManageStudents = () => {
-    setCurrentView('manage-students');
+  const handleMyCourses = () => {
+    setCurrentView('my-courses');
   };
 
-  const handlePostAnnouncement = () => {
-    setCurrentView('post-announcement');
+  const handleGrades = () => {
+    setCurrentView('grades');
   };
 
-  const handleManageAssignments = () => {
-    setCurrentView('manage-assignments');
+  const handleAssignments = () => {
+    setCurrentView('assignments');
   };
 
   // Render different views based on currentView
@@ -125,23 +115,24 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
     );
   }
 
-  if (currentView === 'manage-students') {
+  if (currentView === 'my-courses') {
     return (
-      <StudentManagementPage
+      <InstructorCourseListPage
+        user={user}
         onBack={handleBackToDashboard}
       />
     );
   }
 
-  if (currentView === 'post-announcement') {
+  if (currentView === 'grades') {
     return (
-      <AnnouncementPage
+      <GradeManagementPage
         onBack={handleBackToDashboard}
       />
     );
   }
 
-  if (currentView === 'manage-assignments') {
+  if (currentView === 'assignments') {
     return (
       <AssignmentManagementPage
         onBack={handleBackToDashboard}
@@ -173,6 +164,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
         <Button 
           variant="ghost" 
           className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
+          onClick={() => setCurrentView('dashboard')}
         >
           <Home className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">Dashboard</span>
@@ -181,6 +173,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
         <Button 
           variant="ghost" 
           className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
+          onClick={handleMyCourses}
         >
           <BookOpen className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">My Courses</span>
@@ -198,6 +191,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
         <Button 
           variant="ghost" 
           className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
+          onClick={handleAssignments}
         >
           <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">Assignments</span>
@@ -206,6 +200,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
         <Button 
           variant="ghost" 
           className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
+          onClick={handleGrades}
         >
           <Award className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">Grades</span>
@@ -217,15 +212,6 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
         >
           <Users className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">Students</span>
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={handlePostAnnouncement}
-        >
-          <Bell className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Announcements</span>
         </Button>
       </nav>
     </div>
@@ -294,23 +280,11 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
                 />
               </div>
 
-              {/* Notifications */}
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 relative"
-              >
-                <Bell className="h-4 w-4" />
-                <span className="absolute -top-1 -right-1 h-3 w-3 bg-red-500 rounded-full text-xs"></span>
-              </Button>
-
               {/* Profile */}
               <div className="relative">
                 <Button 
                   variant="ghost" 
                   size="sm" 
-                  onClick={handleManageStudents}
-                  onClick={handleManageAssignments}
                   className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400"
                   onClick={() => setShowProfile(!showProfile)}
                 >
@@ -416,7 +390,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
                   <Button 
                     variant="outline" 
                     className="h-20 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handleManageAssignments}
+                    onClick={handleAssignments}
                   >
                     <FileText className="h-6 w-6" />
                     <span>Manage Assignments</span>
@@ -424,43 +398,10 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
                   <Button 
                     variant="outline" 
                     className="h-20 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
+                    onClick={handleGrades}
                   >
                     <Award className="h-6 w-6" />
                     <span>Grade Submissions</span>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Additional Quick Actions */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Course Management</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <Button 
-                    variant="outline" 
-                    className="h-16 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handleManageStudents}
-                  >
-                    <Users className="h-5 w-5" />
-                    <span className="text-sm">Manage Students</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="h-16 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handlePostAnnouncement}
-                  >
-                    <Bell className="h-5 w-5" />
-                    <span className="text-sm">Post Announcement</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="h-16 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                  >
-                    <Calendar className="h-5 w-5" />
-                    <span className="text-sm">Schedule Class</span>
                   </Button>
                 </div>
               </CardContent>
