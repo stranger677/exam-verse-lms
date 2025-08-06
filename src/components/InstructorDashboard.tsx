@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,7 +16,6 @@ import {
   GraduationCap,
   Menu,
   Search,
-  Users,
   Home,
   Settings,
   Plus,
@@ -206,14 +204,6 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
           <Award className="h-4 w-4 mr-2 flex-shrink-0" />
           <span className="truncate">Grades</span>
         </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-        >
-          <Users className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Students</span>
-        </Button>
       </nav>
     </div>
   );
@@ -335,7 +325,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
               <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105">
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">My Students</CardTitle>
-                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <User className="h-4 w-4 text-muted-foreground" />
                 </CardHeader>
                 <CardContent>
                   <div className="text-2xl font-bold">{courses.reduce((sum, course) => sum + course.students, 0)}</div>
@@ -354,7 +344,7 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
                 </CardContent>
               </Card>
               
-              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105">
+              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105" onClick={handleGrades}>
                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                   <CardTitle className="text-sm font-medium">Pending Grades</CardTitle>
                   <Award className="h-4 w-4 text-muted-foreground" />
