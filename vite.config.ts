@@ -1,3 +1,4 @@
+
 // vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc"; // for React support
@@ -8,7 +9,7 @@ export default defineConfig({
   // Local dev server settings
   server: {
     host: "localhost",
-    port: 5173, // change if you want a custom port
+    port: 8080, // Updated to use port 8080
   },
 
   // Plugins
