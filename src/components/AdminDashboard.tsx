@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
   Sidebar,
   SidebarContent,
@@ -43,14 +43,22 @@ import {
 } from "lucide-react";
 
 interface AdminDashboardProps {
-  user: { role: string; name: string };
+  user: { role: string; name: string; email?: string; avatar?: string };
   onLogout: () => void;
 }
 
 const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const [showAddUser, setShowAddUser] = useState(false);
+  const [showAddCourse, setShowAddCourse] = useState(false);
+  const [showEditCourse, setShowEditCourse] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [showNotifications, setShowNotifications] = useState(false);
+
+  // Get user initials for avatar fallback
+  const getUserInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase();
+  };
 
   // Sidebar menu items
   const menuItems = [
@@ -79,10 +87,10 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
   ];
 
   const allCourses = [
-    { id: 1, name: "Advanced Mathematics", code: "MATH301", instructor: "Dr. Sarah Wilson", students: 45, status: "active" },
-    { id: 2, name: "Computer Science Fundamentals", code: "CS101", instructor: "Prof. Robert Chen", students: 38, status: "active" },
-    { id: 3, name: "Physics Laboratory", code: "PHYS201", instructor: "Dr. Michael Brown", students: 32, status: "active" },
-    { id: 4, name: "Linear Algebra", code: "MATH201", instructor: "Dr. Sarah Wilson", students: 28, status: "active" }
+    { id: 1, name: "Advanced Mathematics", code: "MATH301", instructor: "Dr. Sarah Wilson", students: 45, status: "active", description: "Advanced mathematical concepts and applications" },
+    { id: 2, name: "Computer Science Fundamentals", code: "CS101", instructor: "Prof. Robert Chen", students: 38, status: "active", description: "Introduction to computer science principles" },
+    { id: 3, name: "Physics Laboratory", code: "PHYS201", instructor: "Dr. Michael Brown", students: 32, status: "active", description: "Hands-on physics experiments and analysis" },
+    { id: 4, name: "Linear Algebra", code: "MATH201", instructor: "Dr. Sarah Wilson", students: 28, status: "active", description: "Matrix theory and linear transformations" }
   ];
 
   const systemLogs = [
@@ -102,6 +110,34 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
   const handleAddUser = (e: React.FormEvent) => {
     e.preventDefault();
     setShowAddUser(false);
+  };
+
+  const handleAddCourse = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowAddCourse(false);
+  };
+
+  const handleEditCourse = (e: React.FormEvent) => {
+    e.preventDefault();
+    setShowEditCourse(false);
+    setSelectedCourse(null);
+  };
+
+  const handleStatClick = (statType: string) => {
+    switch (statType) {
+      case 'users':
+        setActiveTab('users');
+        break;
+      case 'students':
+        setActiveTab('users');
+        break;
+      case 'instructors':
+        setActiveTab('users');
+        break;
+      case 'courses':
+        setActiveTab('courses');
+        break;
+    }
   };
 
   const handleQuickAction = (action: string) => {
@@ -156,17 +192,20 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
       case "overview":
         return (
           <div className="space-y-6">
-            {/* System Stats with Hover Effects */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            {/* System Stats with Responsive Design and Click Handlers */}
+            <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-4">
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+                    onClick={() => handleStatClick('users')}
+                  >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Total Users</CardTitle>
                       <Users className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{systemStats.totalUsers.toLocaleString()}</div>
+                      <div className="text-xl lg:text-2xl font-bold">{systemStats.totalUsers.toLocaleString()}</div>
                       <p className="text-xs text-muted-foreground">+12% from last month</p>
                     </CardContent>
                   </Card>
@@ -194,13 +233,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
               
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+                    onClick={() => handleStatClick('students')}
+                  >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Active Students</CardTitle>
                       <GraduationCap className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{systemStats.activeStudents}</div>
+                      <div className="text-xl lg:text-2xl font-bold">{systemStats.activeStudents}</div>
                       <p className="text-xs text-muted-foreground">78.6% of total users</p>
                     </CardContent>
                   </Card>
@@ -219,13 +261,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
               
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+                    onClick={() => handleStatClick('instructors')}
+                  >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Instructors</CardTitle>
                       <UserCog className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{systemStats.instructors}</div>
+                      <div className="text-xl lg:text-2xl font-bold">{systemStats.instructors}</div>
                       <p className="text-xs text-muted-foreground">12.5% of total users</p>
                     </CardContent>
                   </Card>
@@ -244,13 +289,16 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
               
               <HoverCard>
                 <HoverCardTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                  <Card 
+                    className="cursor-pointer hover:shadow-lg transition-all transform hover:scale-105"
+                    onClick={() => handleStatClick('courses')}
+                  >
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                       <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
                       <BookOpen className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                      <div className="text-2xl font-bold">{systemStats.totalCourses}</div>
+                      <div className="text-xl lg:text-2xl font-bold">{systemStats.totalCourses}</div>
                       <p className="text-xs text-muted-foreground">+3 new this week</p>
                     </CardContent>
                   </Card>
@@ -262,31 +310,6 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                       <div>Active courses: 42</div>
                       <div>Archived courses: 3</div>
                       <div>Average enrollment: 28 students</div>
-                    </div>
-                  </div>
-                </HoverCardContent>
-              </HoverCard>
-              
-              <HoverCard>
-                <HoverCardTrigger asChild>
-                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
-                    <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                      <CardTitle className="text-sm font-medium">System Health</CardTitle>
-                      <Activity className="h-4 w-4 text-muted-foreground" />
-                    </CardHeader>
-                    <CardContent>
-                      <div className="text-2xl font-bold text-green-600">98.5%</div>
-                      <p className="text-xs text-muted-foreground">Uptime this month</p>
-                    </CardContent>
-                  </Card>
-                </HoverCardTrigger>
-                <HoverCardContent className="w-80">
-                  <div className="space-y-2">
-                    <h4 className="text-sm font-semibold">System Status</h4>
-                    <div className="space-y-1 text-sm">
-                      <div>Server response time: 120ms</div>
-                      <div>Database queries: 99.2% success</div>
-                      <div>Last maintenance: 3 days ago</div>
                     </div>
                   </div>
                 </HoverCardContent>
@@ -363,7 +386,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
       case "users":
         return (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-2xl font-bold">User Management</h2>
               <Button onClick={() => setShowAddUser(true)}>
                 <Plus className="h-4 w-4 mr-2" />
@@ -379,7 +402,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
               <CardContent>
                 <div className="space-y-4">
                   {allUsers.map((user) => (
-                    <div key={user.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={user.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-4">
                       <div className="flex items-center space-x-4">
                         <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center">
                           <User className="h-5 w-5 text-gray-600" />
@@ -390,7 +413,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                           <p className="text-xs text-gray-500">Last active: {user.lastActive}</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">
+                      <div className="flex flex-wrap items-center gap-2">
                         <Badge className={getRoleColor(user.role)}>
                           {user.role}
                         </Badge>
@@ -417,9 +440,9 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
       case "courses":
         return (
           <div className="space-y-6">
-            <div className="flex justify-between items-center">
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-2xl font-bold">Course Management</h2>
-              <Button>
+              <Button onClick={() => setShowAddCourse(true)}>
                 <Plus className="h-4 w-4 mr-2" />
                 Create Course
               </Button>
@@ -433,7 +456,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
               <CardContent>
                 <div className="space-y-4">
                   {allCourses.map((course) => (
-                    <div key={course.id} className="flex items-center justify-between p-4 border rounded-lg">
+                    <div key={course.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 border rounded-lg gap-4">
                       <div className="flex items-center space-x-4">
                         <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
                           <BookOpen className="h-5 w-5 text-blue-600" />
@@ -444,8 +467,8 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                           <p className="text-xs text-gray-500">Instructor: {course.instructor}</p>
                         </div>
                       </div>
-                      <div className="flex items-center space-x-4">
-                        <div className="text-right">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <div className="text-center">
                           <div className="font-semibold">{course.students}</div>
                           <div className="text-xs text-gray-500">students</div>
                         </div>
@@ -453,7 +476,14 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                           {course.status}
                         </Badge>
                         <div className="flex space-x-2">
-                          <Button size="sm" variant="ghost">
+                          <Button 
+                            size="sm" 
+                            variant="ghost"
+                            onClick={() => {
+                              setSelectedCourse(course);
+                              setShowEditCourse(true);
+                            }}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button size="sm" variant="ghost">
@@ -574,7 +604,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
             <SidebarHeader className="border-b px-6 py-4">
               <div className="flex items-center space-x-3">
                 <Shield className="h-8 w-8 text-purple-600" />
-                <div>
+                <div className="hidden sm:block">
                   <h1 className="text-lg font-semibold text-gray-900">Admin Dashboard</h1>
                   <p className="text-xs text-gray-500">System Administration</p>
                 </div>
@@ -594,7 +624,7 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                         >
                           <button className="w-full flex items-center">
                             <item.icon className="h-4 w-4" />
-                            <span>{item.title}</span>
+                            <span className="hidden sm:inline ml-2">{item.title}</span>
                           </button>
                         </SidebarMenuButton>
                       </SidebarMenuItem>
@@ -608,35 +638,52 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
           <SidebarInset className="flex-1">
             {/* Header */}
             <header className="sticky top-0 z-10 bg-white shadow-sm border-b">
-              <div className="flex justify-between items-center h-16 px-6">
+              <div className="flex justify-between items-center h-16 px-4 sm:px-6">
                 <div className="flex items-center space-x-4">
                   <SidebarTrigger />
-                  <div>
+                  <div className="hidden sm:block">
                     <h1 className="text-xl font-semibold text-gray-900 capitalize">{activeTab.replace(/([A-Z])/g, ' $1')}</h1>
                     <p className="text-sm text-gray-500">Welcome back, {user.name}</p>
                   </div>
                 </div>
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2 sm:space-x-4">
                   <Button 
                     variant="ghost" 
                     size="sm"
                     onClick={() => setShowNotifications(true)}
+                    className="relative"
                   >
                     <Bell className="h-4 w-4" />
+                    <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                   </Button>
-                  <Button variant="ghost" size="sm">
-                    <User className="h-4 w-4" />
-                  </Button>
-                  <Button variant="outline" size="sm" onClick={onLogout}>
+                  
+                  {/* Enhanced Profile Avatar */}
+                  <div className="flex items-center space-x-2">
+                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
+                      <AvatarImage src={user.avatar} alt={user.name} />
+                      <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
+                        {getUserInitials(user.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="hidden md:flex flex-col">
+                      <span className="text-sm font-medium">{user.name}</span>
+                      <span className="text-xs text-gray-500">{user.email}</span>
+                    </div>
+                  </div>
+                  
+                  <Button variant="outline" size="sm" onClick={onLogout} className="hidden sm:flex">
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
+                  </Button>
+                  <Button variant="outline" size="sm" onClick={onLogout} className="sm:hidden">
+                    <LogOut className="h-4 w-4" />
                   </Button>
                 </div>
               </div>
             </header>
 
             {/* Main Content */}
-            <main className="flex-1 p-6">
+            <main className="flex-1 p-4 sm:p-6">
               {renderTabContent()}
             </main>
           </SidebarInset>
@@ -677,6 +724,82 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
             </div>
             <Button type="submit" className="w-full">Add User</Button>
           </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Course Dialog */}
+      <Dialog open={showAddCourse} onOpenChange={setShowAddCourse}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Create New Course</DialogTitle>
+          </DialogHeader>
+          <form onSubmit={handleAddCourse} className="space-y-4">
+            <div>
+              <Label htmlFor="courseName">Course Name</Label>
+              <Input id="courseName" placeholder="e.g., Advanced Mathematics" required />
+            </div>
+            <div>
+              <Label htmlFor="courseCode">Course Code</Label>
+              <Input id="courseCode" placeholder="e.g., MATH301" required />
+            </div>
+            <div>
+              <Label htmlFor="courseInstructor">Instructor</Label>
+              <Select required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select instructor" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="sarah">Dr. Sarah Wilson</SelectItem>
+                  <SelectItem value="robert">Prof. Robert Chen</SelectItem>
+                  <SelectItem value="michael">Dr. Michael Brown</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label htmlFor="courseDescription">Description</Label>
+              <Input id="courseDescription" placeholder="Course description" />
+            </div>
+            <Button type="submit" className="w-full">Create Course</Button>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Course Dialog */}
+      <Dialog open={showEditCourse} onOpenChange={setShowEditCourse}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Edit Course</DialogTitle>
+          </DialogHeader>
+          {selectedCourse && (
+            <form onSubmit={handleEditCourse} className="space-y-4">
+              <div>
+                <Label htmlFor="editCourseName">Course Name</Label>
+                <Input id="editCourseName" defaultValue={selectedCourse.name} required />
+              </div>
+              <div>
+                <Label htmlFor="editCourseCode">Course Code</Label>
+                <Input id="editCourseCode" defaultValue={selectedCourse.code} required />
+              </div>
+              <div>
+                <Label htmlFor="editCourseInstructor">Instructor</Label>
+                <Select defaultValue={selectedCourse.instructor} required>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select instructor" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="Dr. Sarah Wilson">Dr. Sarah Wilson</SelectItem>
+                    <SelectItem value="Prof. Robert Chen">Prof. Robert Chen</SelectItem>
+                    <SelectItem value="Dr. Michael Brown">Dr. Michael Brown</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <Label htmlFor="editCourseDescription">Description</Label>
+                <Input id="editCourseDescription" defaultValue={selectedCourse.description} />
+              </div>
+              <Button type="submit" className="w-full">Update Course</Button>
+            </form>
+          )}
         </DialogContent>
       </Dialog>
 
