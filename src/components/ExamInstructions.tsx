@@ -11,13 +11,17 @@ interface ExamInstructionsProps {
   isOpen: boolean;
   onClose: () => void;
   onStartExam: () => void;
+  showStartButton?: boolean;
+  showResultsButton?: boolean;
 }
 
 const ExamInstructions: React.FC<ExamInstructionsProps> = ({ 
   exam, 
   isOpen, 
   onClose, 
-  onStartExam 
+  onStartExam,
+  showStartButton = true,
+  showResultsButton = false
 }) => {
   const instructions = [
     "Read all questions carefully before answering",
@@ -158,10 +162,18 @@ const ExamInstructions: React.FC<ExamInstructionsProps> = ({
               <Button variant="outline" onClick={onClose}>
                 Cancel
               </Button>
-              <Button onClick={onStartExam} className="bg-green-600 hover:bg-green-700">
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Start Exam
-              </Button>
+              {showStartButton && (
+                <Button onClick={onStartExam} className="bg-green-600 hover:bg-green-700">
+                  <CheckCircle className="h-4 w-4 mr-2" />
+                  Start Exam
+                </Button>
+              )}
+              {showResultsButton && (
+                <Button onClick={onStartExam} className="bg-blue-600 hover:bg-blue-700">
+                  <FileText className="h-4 w-4 mr-2" />
+                  View Results
+                </Button>
+              )}
             </div>
           </div>
         </div>

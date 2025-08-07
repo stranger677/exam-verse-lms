@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -38,6 +37,8 @@ interface Submission {
   status: 'submitted' | 'graded' | 'late';
   grade?: number;
   feedback?: string;
+  assignmentTitle: string;
+  course: string;
 }
 
 const AssignmentManagementPage: React.FC<AssignmentManagementPageProps> = ({ onBack }) => {
