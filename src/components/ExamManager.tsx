@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 import ExamsPage from './ExamsPage';
 import ExamInstructions from './ExamInstructions';
 import ExamInterface from './ExamInterface';
+import ExamDetailsPage from './ExamDetailsPage';
+import ExamResultsPage from './ExamResultsPage';
 import InstructorCreateExam from './InstructorCreateExam';
 import InstructorManageExams from './InstructorManageExams';
 import GradingInterface from './GradingInterface';
@@ -14,7 +16,7 @@ interface ExamManagerProps {
 }
 
 const ExamManager: React.FC<ExamManagerProps> = ({ onBack, userRole, darkMode = false }) => {
-  const [currentView, setCurrentView] = useState<'list' | 'instructions' | 'exam' | 'create' | 'manage' | 'grading'>('list');
+  const [currentView, setCurrentView] = useState<'list' | 'instructions' | 'exam' | 'details' | 'results' | 'create' | 'manage' | 'grading'>('list');
   const [selectedExam, setSelectedExam] = useState<any>(null);
   const [showInstructions, setShowInstructions] = useState(false);
 
@@ -52,18 +54,19 @@ const ExamManager: React.FC<ExamManagerProps> = ({ onBack, userRole, darkMode = 
 
   const handleStartExam = (exam: any) => {
     setSelectedExam(exam || sampleExam);
-    setShowInstructions(true);
+    if (exam.status === 'scheduled' && !exam.isLive) {
+      setShowInstructions(true);
+    } else {
+      setCurrentView('exam');
+    }
   };
 
   const handleViewExamDetails = (exam: any) => {
+    setSelectedExam(exam);
     if (exam.status === 'completed') {
-      // Show results for completed exams
-      setSelectedExam(exam);
-      setShowExamInstructions(true);
+      setCurrentView('results');
     } else {
-      // Show details for upcoming exams
-      setSelectedExam(exam);
-      setShowExamInstructions(true);
+      setCurrentView('details');
     }
   };
 
@@ -110,6 +113,27 @@ const ExamManager: React.FC<ExamManagerProps> = ({ onBack, userRole, darkMode = 
         exam={selectedExam}
         onSubmit={handleExamSubmit}
         onExit={handleBackToList}
+      />
+    );
+  }
+
+  if (currentView === 'details' && selectedExam) {
+    return (
+      <ExamDetailsPage
+        exam={selectedExam}
+        onBack={handleBackToList}
+        onStartExam={() => {
+          setShowInstructions(true);
+        }}
+      />
+    );
+  }
+
+  if (currentView === 'results' && selectedExam) {
+    return (
+      <ExamResultsPage
+        exam={selectedExam}
+        onBack={handleBackToList}
       />
     );
   }
