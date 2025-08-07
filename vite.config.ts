@@ -8,7 +8,7 @@ export default defineConfig({
   // Local dev server settings
   server: {
     host: "localhost",
-    port: 5173, // change if you want a custom port
+    port: 8080,
   },
 
   // Plugins
