@@ -37,7 +37,7 @@ interface Course {
 
 const GradeManagementPage: React.FC<GradeManagementPageProps> = ({ onBack }) => {
   const { toast } = useToast();
-  const [selectedCourse, setSelectedCourse] = useState<string>('');
+  const [selectedCourse, setSelectedCourse] = useState<string>('all');
   const [editingStudent, setEditingStudent] = useState<string | null>(null);
   const [showAddGrade, setShowAddGrade] = useState(false);
 
@@ -83,12 +83,12 @@ const GradeManagementPage: React.FC<GradeManagementPageProps> = ({ onBack }) => 
     }
   ]);
 
-  const filteredStudents = selectedCourse 
-    ? students.filter(student => {
+  const filteredStudents = selectedCourse === 'all'
+    ? students
+    : students.filter(student => {
         const course = courses.find(c => c.id === selectedCourse);
         return course && student.course === course.code;
-      })
-    : students;
+      });
 
   const calculateCGPA = (quiz: number, midterm: number, final: number): number => {
     // Weighted calculation: Quiz 20%, Midterm 30%, Final 50%
@@ -188,7 +188,7 @@ const GradeManagementPage: React.FC<GradeManagementPageProps> = ({ onBack }) => 
                     <SelectValue placeholder="Select a course" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Courses</SelectItem>
+                    <SelectItem value="all">All Courses</SelectItem>
                     {courses.map((course) => (
                       <SelectItem key={course.id} value={course.id}>
                         {course.name} ({course.code})
