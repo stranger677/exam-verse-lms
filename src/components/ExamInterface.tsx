@@ -34,8 +34,12 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
   const { toast } = useToast();
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<Record<number, string | number>>({});
-  const [timeRemaining, setTimeRemaining] = useState(exam.duration * 60); // Convert to seconds
+  const [timeRemaining, setTimeRemaining] = useState((exam?.duration || 120) * 60); // Convert to seconds with fallback
   const [showSubmitConfirmation, setShowSubmitConfirmation] = useState(false);
+
+  // Ensure exam and questions exist with fallbacks
+  const safeExam = exam || { title: "Default Exam", course: "Default Course", duration: 120, questions: [] };
+  const safeQuestions = safeExam.questions || [];
 
   // Timer effect
   useEffect(() => {
@@ -72,8 +76,27 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
     });
   };
 
-  const currentQ = exam.questions[currentQuestion];
-  const progress = ((currentQuestion + 1) / exam.questions.length) * 100;
+  // Safe access to current question with fallback
+  const currentQ = safeQuestions[currentQuestion];
+  const progress = safeQuestions.length > 0 ? ((currentQuestion + 1) / safeQuestions.length) * 100 : 0;
+
+  // If no questions exist, show a message
+  if (!currentQ) {
+    return (
+      <div className="min-h-screen bg-gray-50 p-4">
+        <div className="max-w-4xl mx-auto">
+          <Card>
+            <CardContent className="text-center py-12">
+              <p className="text-lg text-gray-600">No questions available for this exam.</p>
+              <Button onClick={onExit} className="mt-4">
+                Back to Exams
+              </Button>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 p-4">
@@ -82,8 +105,8 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
         <div className="bg-white rounded-lg shadow-sm p-6 mb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-bold text-gray-900">{exam.title}</h1>
-              <p className="text-gray-600">{exam.course}</p>
+              <h1 className="text-2xl font-bold text-gray-900">{safeExam.title}</h1>
+              <p className="text-gray-600">{safeExam.course}</p>
             </div>
             <div className="flex items-center space-x-4">
               <div className={`flex items-center space-x-2 px-4 py-2 rounded-lg ${timeRemaining <= 300 ? 'bg-red-100 text-red-700' : 'bg-blue-100 text-blue-700'}`}>
@@ -98,7 +121,7 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
           
           <div className="mt-4">
             <div className="flex items-center justify-between text-sm text-gray-600 mb-2">
-              <span>Question {currentQuestion + 1} of {exam.questions.length}</span>
+              <span>Question {currentQuestion + 1} of {safeQuestions.length}</span>
               <span>{Math.round(progress)}% Complete</span>
             </div>
             <Progress value={progress} className="w-full" />
@@ -111,7 +134,7 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
             <CardTitle className="flex items-center justify-between">
               <span>Question {currentQuestion + 1}</span>
               <span className="text-sm font-normal text-gray-600">
-                {currentQ.maxPoints} points
+                {currentQ.maxPoints || 0} points
               </span>
             </CardTitle>
           </CardHeader>
@@ -158,8 +181,8 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
               </Button>
               <Button
                 variant="outline"
-                disabled={currentQuestion === exam.questions.length - 1}
-                onClick={() => setCurrentQuestion(prev => Math.min(exam.questions.length - 1, prev + 1))}
+                disabled={currentQuestion === safeQuestions.length - 1}
+                onClick={() => setCurrentQuestion(prev => Math.min(safeQuestions.length - 1, prev + 1))}
               >
                 Next
               </Button>
@@ -177,16 +200,16 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
           <div className="mt-4 pt-4 border-t">
             <p className="text-sm text-gray-600 mb-3">Jump to question:</p>
             <div className="grid grid-cols-10 gap-2">
-              {exam.questions.map((_, index) => (
+              {safeQuestions.map((_, index) => (
                 <Button
                   key={index}
                   variant={currentQuestion === index ? "default" : "outline"}
                   size="sm"
-                  className={`w-10 h-10 ${answers[exam.questions[index].id] ? 'bg-green-100 border-green-300' : ''}`}
+                  className={`w-10 h-10 ${answers[safeQuestions[index]?.id] ? 'bg-green-100 border-green-300' : ''}`}
                   onClick={() => setCurrentQuestion(index)}
                 >
                   {index + 1}
-                  {answers[exam.questions[index].id] && (
+                  {answers[safeQuestions[index]?.id] && (
                     <CheckCircle className="h-3 w-3 absolute -top-1 -right-1 text-green-600" />
                   )}
                 </Button>
@@ -208,7 +231,7 @@ const ExamInterface: React.FC<ExamInterfaceProps> = ({ exam, onSubmit, onExit })
               <CardContent className="space-y-4">
                 <p>Are you sure you want to submit your exam?</p>
                 <div className="text-sm text-gray-600">
-                  <p>Answered: {Object.keys(answers).length} of {exam.questions.length} questions</p>
+                  <p>Answered: {Object.keys(answers).length} of {safeQuestions.length} questions</p>
                   <p>Time remaining: {formatTime(timeRemaining)}</p>
                 </div>
                 <p className="text-sm text-red-600">
