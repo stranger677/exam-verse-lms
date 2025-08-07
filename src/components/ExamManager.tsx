@@ -56,8 +56,15 @@ const ExamManager: React.FC<ExamManagerProps> = ({ onBack, userRole, darkMode = 
   };
 
   const handleViewExamDetails = (exam: any) => {
-    setSelectedExam(exam || sampleExam);
-    setShowInstructions(true);
+    if (exam.status === 'completed') {
+      // Show results for completed exams
+      setSelectedExam(exam);
+      setShowExamInstructions(true);
+    } else {
+      // Show details for upcoming exams
+      setSelectedExam(exam);
+      setShowExamInstructions(true);
+    }
   };
 
   const handleExamSubmit = (answers: Record<number, string | number>) => {
@@ -91,6 +98,8 @@ const ExamManager: React.FC<ExamManagerProps> = ({ onBack, userRole, darkMode = 
           setShowInstructions(false);
           setCurrentView('exam');
         }}
+        showStartButton={selectedExam.status !== 'completed'}
+        showResultsButton={selectedExam.status === 'completed'}
       />
     );
   }

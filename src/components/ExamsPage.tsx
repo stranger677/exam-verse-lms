@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -326,16 +325,7 @@ const ExamsPage: React.FC<ExamsPageProps> = ({
               )}
               {exam.status === "scheduled" && (
                 <>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    className="flex-1"
-                    onClick={() => onViewExamDetails && onViewExamDetails(exam)}
-                  >
-                    <FileText className="h-4 w-4 mr-1" />
-                    View Details
-                  </Button>
-                  {exam.isLive && (
+                  {exam.isLive ? (
                     <Button 
                       size="sm" 
                       className="bg-blue-600 hover:bg-blue-700 flex-1"
@@ -343,6 +333,16 @@ const ExamsPage: React.FC<ExamsPageProps> = ({
                     >
                       <Clock className="h-4 w-4 mr-1" />
                       Start Exam
+                    </Button>
+                  ) : (
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="flex-1"
+                      onClick={() => onViewExamDetails && onViewExamDetails(exam)}
+                    >
+                      <FileText className="h-4 w-4 mr-1" />
+                      View Details
                     </Button>
                   )}
                 </>
@@ -355,7 +355,7 @@ const ExamsPage: React.FC<ExamsPageProps> = ({
                   onClick={() => onViewExamDetails && onViewExamDetails(exam)}
                 >
                   <Award className="h-4 w-4 mr-1" />
-                  View Results
+                  View Result
                 </Button>
               )}
             </div>

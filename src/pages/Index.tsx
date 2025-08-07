@@ -163,8 +163,15 @@ const Index = () => {
   };
 
   const handleViewExamDetails = (exam: any) => {
-    setSelectedExam(exam);
-    setShowExamInstructions(true);
+    if (exam.status === 'completed') {
+      // For completed exams, show results
+      setSelectedExam(exam);
+      setShowExamInstructions(true);
+    } else {
+      // For upcoming exams, show details
+      setSelectedExam(exam);
+      setShowExamInstructions(true);
+    }
   };
 
   const handleStartExamFromInstructions = () => {
@@ -257,6 +264,8 @@ const Index = () => {
                   isOpen={showExamInstructions}
                   onClose={() => setShowExamInstructions(false)}
                   onStartExam={handleStartExamFromInstructions}
+                  showStartButton={selectedExam?.status !== 'completed'}
+                  showResultsButton={selectedExam?.status === 'completed'}
                 />
               </>
             );

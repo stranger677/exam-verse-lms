@@ -47,6 +47,21 @@ const AssignmentManagementPage: React.FC<AssignmentManagementPageProps> = ({ onB
   const [showEditAssignment, setShowEditAssignment] = useState(false);
   const [showSubmissions, setShowSubmissions] = useState(false);
   const [selectedAssignment, setSelectedAssignment] = useState<Assignment | null>(null);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+
+  // Load submissions from localStorage
+  React.useEffect(() => {
+    const storedSubmissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+    setSubmissions(storedSubmissions.map((sub: any) => ({
+      id: sub.id,
+      studentName: sub.studentName,
+      studentId: sub.studentId,
+      submittedAt: sub.submittedAt,
+      status: sub.status,
+      assignmentTitle: sub.assignmentTitle,
+      course: sub.course
+    })));
+  }, []);
 
   const [assignments, setAssignments] = useState<Assignment[]>([
     {
@@ -89,31 +104,6 @@ const AssignmentManagementPage: React.FC<AssignmentManagementPageProps> = ({ onB
     }
   ]);
 
-  const submissions: Submission[] = [
-    {
-      id: 1,
-      studentName: "John Doe",
-      studentId: "2021001234",
-      submittedAt: "2024-06-18T14:30:00",
-      status: "submitted",
-    },
-    {
-      id: 2,
-      studentName: "Jane Smith",
-      studentId: "2021001235",
-      submittedAt: "2024-06-19T10:15:00",
-      status: "graded",
-      grade: 85,
-      feedback: "Good work! Minor calculation error in problem 3."
-    },
-    {
-      id: 3,
-      studentName: "Mike Johnson",
-      studentId: "2021001236",
-      submittedAt: "2024-06-21T09:00:00",
-      status: "late",
-    }
-  ];
 
   const courses = [
     { value: 'MATH301', label: 'Advanced Mathematics (MATH301)' },
@@ -295,6 +285,8 @@ const AssignmentManagementPage: React.FC<AssignmentManagementPageProps> = ({ onB
                       <div>
                         <h4 className="font-medium">{submission.studentName}</h4>
                         <p className="text-sm text-gray-600">ID: {submission.studentId}</p>
+                        <p className="text-sm text-blue-600">Assignment: {submission.assignmentTitle}</p>
+                        <p className="text-sm text-gray-500">Course: {submission.course}</p>
                         <p className="text-xs text-gray-500">
                           Submitted: {new Date(submission.submittedAt).toLocaleString()}
                         </p>
@@ -316,6 +308,13 @@ const AssignmentManagementPage: React.FC<AssignmentManagementPageProps> = ({ onB
                       </div>
                     </div>
                   ))}
+                  {submissions.length === 0 && (
+                    <div className="text-center py-8">
+                      <FileText className="h-12 w-12 text-gray-400 mx-auto mb-3" />
+                      <h3 className="text-lg font-medium text-gray-900">No submissions yet</h3>
+                      <p className="text-gray-500">Student submissions will appear here</p>
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>

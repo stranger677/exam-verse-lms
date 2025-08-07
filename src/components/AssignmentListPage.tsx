@@ -4,7 +4,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { ArrowLeft, FileText, Calendar, Clock, AlertTriangle } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 interface AssignmentListPageProps {
   user: { role: string; name: string };
@@ -12,7 +14,10 @@ interface AssignmentListPageProps {
 }
 
 const AssignmentListPage: React.FC<AssignmentListPageProps> = ({ user, onBack }) => {
+  const { toast } = useToast();
   const [activeTab, setActiveTab] = useState("all");
+  const [showSubmitDialog, setShowSubmitDialog] = useState(false);
+  const [selectedAssignment, setSelectedAssignment] = useState<any>(null);
 
   const allAssignments = [
     { 
@@ -77,6 +82,45 @@ const AssignmentListPage: React.FC<AssignmentListPageProps> = ({ user, onBack })
     }
   ];
 
+  const handleSubmitAssignment = (assignment: any) => {
+    setSelectedAssignment(assignment);
+    setShowSubmitDialog(true);
+  };
+
+  const confirmSubmit = () => {
+    if (selectedAssignment) {
+      // Update assignment status to submitted
+      const updatedAssignment = {
+        ...selectedAssignment,
+        status: 'submitted',
+        submittedAt: new Date().toISOString()
+      };
+
+      // Store submission in localStorage for instructor to see
+      const existingSubmissions = JSON.parse(localStorage.getItem('assignmentSubmissions') || '[]');
+      const newSubmission = {
+        id: Date.now(),
+        assignmentId: selectedAssignment.id,
+        assignmentTitle: selectedAssignment.title,
+        studentName: user.name,
+        studentId: '2021001234', // In real app, this would come from user data
+        course: selectedAssignment.course,
+        submittedAt: new Date().toISOString(),
+        status: 'submitted'
+      };
+      
+      existingSubmissions.push(newSubmission);
+      localStorage.setItem('assignmentSubmissions', JSON.stringify(existingSubmissions));
+
+      setShowSubmitDialog(false);
+      setSelectedAssignment(null);
+      
+      toast({
+        title: "Assignment Submitted Successfully!",
+        description: `Your assignment "${selectedAssignment.title}" has been submitted for review.`
+      });
+    }
+  };
   const filterAssignments = (status: string) => {
     if (status === "all") return allAssignments;
     
@@ -214,7 +258,7 @@ const AssignmentListPage: React.FC<AssignmentListPageProps> = ({ user, onBack })
                         </Badge>
                         {assignment.status === 'pending' && (
                           <Button size="sm" className="bg-nu-secondary hover:bg-blue-700">
-                            Submit
+                            <span onClick={() => handleSubmitAssignment(assignment)}>Submit</span>
                           </Button>
                         )}
                         {assignment.status === 'future' && (
@@ -245,6 +289,29 @@ const AssignmentListPage: React.FC<AssignmentListPageProps> = ({ user, onBack })
           ))}
         </Tabs>
       </div>
+
+      {/* Submit Assignment Dialog */}
+      <Dialog open={showSubmitDialog} onOpenChange={setShowSubmitDialog}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Submit Assignment</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <p>Are you sure you want to submit "{selectedAssignment?.title}"?</p>
+            <p className="text-sm text-gray-600">
+              Once submitted, you cannot make changes to your assignment.
+            </p>
+            <div className="flex space-x-3">
+              <Button variant="outline" onClick={() => setShowSubmitDialog(false)} className="flex-1">
+                Cancel
+              </Button>
+              <Button onClick={confirmSubmit} className="flex-1 bg-green-600 hover:bg-green-700">
+                Submit Assignment
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 };
