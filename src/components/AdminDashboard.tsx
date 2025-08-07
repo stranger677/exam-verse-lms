@@ -442,10 +442,15 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
           <div className="space-y-6">
             <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
               <h2 className="text-2xl font-bold">Course Management</h2>
-              <Button onClick={() => setShowAddCourse(true)}>
-                <Plus className="h-4 w-4 mr-2" />
-                Create Course
-              </Button>
+              <div className="flex gap-2">
+                <Button onClick={() => setShowAddCourse(true)}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Course
+                </Button>
+                <Button variant="outline" size="icon">
+                  <Settings className="h-4 w-4" />
+                </Button>
+              </div>
             </div>
             
             <Card>
@@ -657,25 +662,65 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                     <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                   </Button>
                   
-                  {/* Enhanced Profile Avatar */}
-                  <div className="flex items-center space-x-2">
-                    <Avatar className="h-8 w-8 sm:h-10 sm:w-10">
-                      <AvatarImage src={user.avatar} alt={user.name} />
-                      <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
-                        {getUserInitials(user.name)}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="hidden md:flex flex-col">
-                      <span className="text-sm font-medium">{user.name}</span>
-                      <span className="text-xs text-gray-500">{user.email}</span>
-                    </div>
-                  </div>
+                  {/* Enhanced Responsive Profile Avatar */}
+                  <HoverCard>
+                    <HoverCardTrigger asChild>
+                      <div className="flex items-center space-x-2 cursor-pointer hover:bg-gray-50 rounded-lg p-2 transition-colors">
+                        <Avatar className="h-6 w-6 sm:h-8 sm:w-8 md:h-10 md:w-10">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
+                            {getUserInitials(user.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="hidden lg:flex flex-col">
+                          <span className="text-sm font-medium truncate max-w-32">{user.name}</span>
+                          <span className="text-xs text-gray-500 truncate max-w-32">{user.email}</span>
+                        </div>
+                      </div>
+                    </HoverCardTrigger>
+                    <HoverCardContent className="w-80" align="end">
+                      <div className="flex items-start space-x-4">
+                        <Avatar className="h-12 w-12">
+                          <AvatarImage src={user.avatar} alt={user.name} />
+                          <AvatarFallback className="bg-primary text-primary-foreground">
+                            {getUserInitials(user.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 space-y-1">
+                          <h4 className="text-sm font-semibold">{user.name}</h4>
+                          <p className="text-sm text-muted-foreground">
+                            {user.email}
+                          </p>
+                          <div className="flex items-center pt-2 space-x-2">
+                            <Badge variant="secondary" className="text-xs">
+                              {user.role}
+                            </Badge>
+                            <span className="text-xs text-green-600">● Online</span>
+                          </div>
+                          <div className="flex pt-2 space-x-2">
+                            <Button variant="outline" size="sm" className="text-xs h-8">
+                              Profile Settings
+                            </Button>
+                            <Button 
+                              variant="outline" 
+                              size="sm" 
+                              onClick={onLogout} 
+                              className="text-xs h-8"
+                            >
+                              <LogOut className="h-3 w-3 mr-1" />
+                              Logout
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
+                    </HoverCardContent>
+                  </HoverCard>
                   
-                  <Button variant="outline" size="sm" onClick={onLogout} className="hidden sm:flex">
+                  <Button variant="outline" size="sm" onClick={onLogout} className="hidden md:flex">
                     <LogOut className="h-4 w-4 mr-2" />
                     Logout
                   </Button>
-                  <Button variant="outline" size="sm" onClick={onLogout} className="sm:hidden">
+                  <Button variant="outline" size="sm" onClick={onLogout} className="md:hidden">
                     <LogOut className="h-4 w-4" />
                   </Button>
                 </div>
