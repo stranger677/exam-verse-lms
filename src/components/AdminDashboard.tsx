@@ -662,68 +662,25 @@ const AdminDashboard: React.FC<AdminDashboardProps> = ({ user, onLogout }) => {
                     <span className="absolute -top-1 -right-1 h-2 w-2 bg-red-500 rounded-full"></span>
                   </Button>
                   
-                  {/* Enhanced Responsive Profile Avatar */}
-                  <HoverCard>
-                    <HoverCardTrigger asChild>
-                      <Button 
-                        variant="ghost" 
-                        size="sm" 
-                        className="h-auto p-1 sm:p-2 rounded-lg hover:bg-gray-50 transition-colors"
-                      >
-                        <div className="flex items-center space-x-1 sm:space-x-2">
-                          <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
-                            <AvatarImage src={user.avatar} alt={user.name} />
-                            <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
-                              {getUserInitials(user.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                          <div className="hidden md:flex flex-col text-left">
-                            <span className="text-xs sm:text-sm font-medium truncate max-w-24 sm:max-w-32">{user.name}</span>
-                            <span className="text-xs text-gray-500 truncate max-w-24 sm:max-w-32">{user.role}</span>
-                          </div>
-                        </div>
-                      </Button>
-                    </HoverCardTrigger>
-                    <HoverCardContent className="w-80" align="end">
-                      <div className="flex items-start space-x-4">
-                        <Avatar className="h-12 w-12">
-                          <AvatarImage src={user.avatar} alt={user.name} />
-                          <AvatarFallback className="bg-primary text-primary-foreground">
-                            {getUserInitials(user.name)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-1">
-                          <h4 className="text-sm font-semibold">{user.name}</h4>
-                          <p className="text-sm text-muted-foreground">
-                            {user.email || 'admin@university.edu'}
-                          </p>
-                          <div className="flex items-center pt-2 space-x-2">
-                            <Badge variant="secondary" className="text-xs capitalize">
-                              {user.role}
-                            </Badge>
-                            <span className="text-xs text-green-600 flex items-center">
-                              <span className="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
-                              Online
-                            </span>
-                          </div>
-                          <div className="flex pt-2 space-x-2">
-                            <Button variant="outline" size="sm" className="text-xs h-8">
-                              Profile Settings
-                            </Button>
-                            <Button 
-                              variant="outline" 
-                              size="sm" 
-                              onClick={onLogout} 
-                              className="text-xs h-8"
-                            >
-                              <LogOut className="h-3 w-3 mr-1" />
-                              Logout
-                            </Button>
-                          </div>
-                        </div>
+                  {/* Updated Profile Avatar - Student Dashboard Style */}
+                  <Button 
+                    variant="ghost" 
+                    size="sm" 
+                    className="h-auto p-1 sm:p-2 rounded-lg hover:bg-blue-100 hover:text-blue-700 transition-colors"
+                  >
+                    <div className="flex items-center space-x-1 sm:space-x-2">
+                      <Avatar className="h-6 w-6 sm:h-8 sm:w-8">
+                        <AvatarImage src={user.avatar} alt={user.name} />
+                        <AvatarFallback className="bg-primary text-primary-foreground text-xs sm:text-sm">
+                          {getUserInitials(user.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="hidden md:flex flex-col text-left">
+                        <span className="text-xs sm:text-sm font-medium truncate max-w-24 sm:max-w-32">{user.name}</span>
+                        <span className="text-xs text-gray-500 truncate max-w-24 sm:max-w-32">{user.role}</span>
                       </div>
-                    </HoverCardContent>
-                  </HoverCard>
+                    </div>
+                  </Button>
                   
                   <Button variant="outline" size="sm" onClick={onLogout} className="hidden lg:flex">
                     <LogOut className="h-4 w-4 mr-2" />
