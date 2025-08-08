@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,7 +31,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 75,
       nextClass: "Tomorrow 2:00 PM",
       studentsEnrolled: 42,
-      image: "/api/placeholder/400/200?text=Mathematics",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: false
     },
     {
@@ -47,7 +46,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 60,
       nextClass: "Wednesday 10:00 AM",
       studentsEnrolled: 68,
-      image: "/api/placeholder/400/200?text=CS",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: false
     },
     {
@@ -62,7 +61,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 90,
       nextClass: "Friday 1:00 PM",
       studentsEnrolled: 35,
-      image: "/api/placeholder/400/200?text=Physics",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: false
     },
     {
@@ -77,7 +76,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 45,
       nextClass: "Monday 11:00 AM",
       studentsEnrolled: 120,
-      image: "/api/placeholder/400/200?text=Psychology",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: false
     },
     {
@@ -92,7 +91,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 0,
       nextClass: "N/A",
       studentsEnrolled: 0,
-      image: "/api/placeholder/400/200?text=Database",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: true
     },
     {
@@ -107,7 +106,7 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
       progress: 0,
       nextClass: "N/A",
       studentsEnrolled: 0,
-      image: "/api/placeholder/400/200?text=ML",
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png",
       isFuture: true
     }
   ];
@@ -190,11 +189,11 @@ const CourseListPage: React.FC<CourseListPageProps> = ({ user, onBack, onEnterCo
                   course.isFuture ? 'bg-gray-100 dark:bg-gray-800/50 opacity-75' : 'hover:bg-blue-50 dark:hover:bg-blue-900/20'
                 }`}
               >
-                <div className="h-48 overflow-hidden">
+                <div className="h-48 overflow-hidden bg-blue-50 dark:bg-blue-900/20 flex items-center justify-center">
                   <img 
                     src={course.image} 
                     alt={course.name}
-                    className="w-full h-full object-cover"
+                    className="w-32 h-32 object-contain"
                   />
                 </div>
                 <CardHeader>

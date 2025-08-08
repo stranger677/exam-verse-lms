@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,7 +52,7 @@ const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ use
       semester: "Fall 2024",
       description: "A comprehensive study of advanced mathematical concepts including calculus, differential equations, and linear algebra.",
       studentsEnrolled: 42,
-      image: "/api/placeholder/400/200?text=Mathematics"
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
     },
     {
       id: 2,
@@ -65,7 +64,7 @@ const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ use
       semester: "Fall 2024",
       description: "Introduction to core computer science concepts, data structures, and basic programming paradigms.",
       studentsEnrolled: 68,
-      image: "/api/placeholder/400/200?text=CS"
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
     },
     {
       id: 3,
@@ -77,7 +76,7 @@ const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ use
       semester: "Fall 2024",
       description: "Practical laboratory course covering fundamental physics experiments and data analysis techniques.",
       studentsEnrolled: 35,
-      image: "/api/placeholder/400/200?text=Physics"
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
     }
   ];
 
@@ -470,11 +469,11 @@ const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ use
               className="overflow-hidden transition-all duration-200 hover:shadow-lg transform hover:scale-[1.02] cursor-pointer"
               onClick={() => setSelectedCourse(course)}
             >
-              <div className="h-48 overflow-hidden">
+              <div className="h-48 overflow-hidden bg-blue-50 flex items-center justify-center">
                 <img 
                   src={course.image} 
                   alt={course.name}
-                  className="w-full h-full object-cover"
+                  className="w-32 h-32 object-contain"
                 />
               </div>
               <CardHeader>
