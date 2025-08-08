@@ -93,7 +93,7 @@ const Index = () => {
     },
     {
       icon: Users,
-      title: "Student Enrollment",
+      title: "Student Enrollment", 
       description: "Easy enrollment system with cohort management for targeted learning"
     },
     {
@@ -288,28 +288,38 @@ const Index = () => {
           style={{backgroundImage: "url('/api/placeholder/1920/1080')"}}
         ></div>
         
-        {/* Header */}
-        <header className="bg-blue-100 dark:bg-blue-900/30 shadow-sm border-b relative z-10 sticky top-0">
+        {/* Enhanced Professional Header */}
+        <header className="bg-white/95 dark:bg-gray-900/95 backdrop-blur-md shadow-lg border-b border-blue-100 dark:border-gray-700 relative z-10 sticky top-0">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center space-x-3">
-                {/* University Logo */}
+            <div className="flex justify-between items-center h-20">
+              <div className="flex items-center space-x-4">
+                {/* Enhanced University Logo */}
                 <div className="university-logo">
                   <img 
-                    src="/api/placeholder/40/40?text=DIU" 
+                    src="/lovable-uploads/9a79b082-5152-4def-b442-6661e4117873.png" 
                     alt="Daffodil International University Logo" 
-                    className="h-10 w-10 rounded-full"
+                    className="h-12 w-12 rounded-full shadow-md"
                   />
                 </div>
                 <div>
-                  <h1 className="text-2xl font-bold text-nu-primary dark:text-white">Daffodil International University</h1>
-                  <p className="text-sm text-nu-secondary dark:text-gray-300">Learning Management System</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
+                    Daffodil International University
+                  </h1>
+                  <p className="text-sm md:text-base text-blue-700 dark:text-blue-400 font-semibold">
+                    Learning Management System
+                  </p>
                 </div>
               </div>
               <nav className="hidden md:flex space-x-8">
-                <a href="#features" className="text-gray-600 dark:text-gray-300 hover:text-nu-primary dark:hover:text-white transition-colors hover:bg-blue-100 dark:hover:bg-blue-900/20 p-2 rounded">Features</a>
-                <a href="#about" className="text-gray-600 dark:text-gray-300 hover:text-nu-primary dark:hover:text-white transition-colors hover:bg-blue-100 dark:hover:bg-blue-900/20 p-2 rounded">About</a>
-                <a href="#contact" className="text-gray-600 dark:text-gray-300 hover:text-nu-primary dark:hover:text-white transition-colors hover:bg-blue-100 dark:hover:bg-blue-900/20 p-2 rounded">Contact</a>
+                <a href="#features" className="text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                  Features
+                </a>
+                <a href="#about" className="text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                  About
+                </a>
+                <a href="#contact" className="text-gray-700 dark:text-gray-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors font-medium px-3 py-2 rounded-lg hover:bg-blue-50 dark:hover:bg-blue-900/20">
+                  Contact
+                </a>
               </nav>
             </div>
           </div>
@@ -317,50 +327,50 @@ const Index = () => {
 
         {/* Main Content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 min-h-screen grid md:grid-cols-2 gap-8 items-center relative z-10">
-          {/* Left Side - Hero Text */}
+          {/* Left Side - Enhanced Hero Text */}
           <div className="text-left">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-6 leading-tight">
               Transform Your
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-nu-primary to-nu-secondary">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 dark:from-blue-400 dark:to-indigo-400">
                 {" "}Learning Experience
               </span>
             </h1>
-            <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
+            <p className="text-xl text-gray-700 dark:text-gray-300 mb-8 leading-relaxed">
               A comprehensive Learning Management System designed for modern education. 
               Manage courses, conduct secure exams, and track student progress all in one platform.
             </p>
             
             <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
                   <CheckIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
-                <span className="text-gray-700 dark:text-gray-300">24/7 Access</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium">24/7 Access</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
                   <CheckIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
-                <span className="text-gray-700 dark:text-gray-300">Interactive Content</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium">Interactive Content</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
                   <CheckIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
-                <span className="text-gray-700 dark:text-gray-300">Progress Tracking</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium">Progress Tracking</span>
               </div>
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center space-x-3">
                 <div className="bg-green-100 dark:bg-green-900/30 p-2 rounded-full">
                   <CheckIcon className="h-5 w-5 text-green-600 dark:text-green-400" />
                 </div>
-                <span className="text-gray-700 dark:text-gray-300">Mobile Friendly</span>
+                <span className="text-gray-700 dark:text-gray-300 font-medium">Mobile Friendly</span>
               </div>
             </div>
           </div>
 
           {/* Right Side - Login Box */}
           <div>
-            <Card className="shadow-lg border-0">
+            <Card className="shadow-xl border-0 backdrop-blur-sm bg-white/90 dark:bg-gray-800/90">
               <CardContent className="pt-6">
                 {!selectedRole ? (
                   <div className="space-y-4">
@@ -372,21 +382,21 @@ const Index = () => {
                     <div className="grid grid-cols-1 gap-3">
                       <Button 
                         onClick={() => handleRoleSelect('student')}
-                        className="flex items-center justify-center space-x-3 h-16 bg-blue-600 hover:bg-blue-700"
+                        className="flex items-center justify-center space-x-3 h-16 bg-blue-600 hover:bg-blue-700 shadow-lg"
                       >
                         <User className="h-6 w-6" />
                         <span className="text-lg">Student</span>
                       </Button>
                       <Button 
                         onClick={() => handleRoleSelect('instructor')}
-                        className="flex items-center justify-center space-x-3 h-16 bg-green-600 hover:bg-green-700"
+                        className="flex items-center justify-center space-x-3 h-16 bg-green-600 hover:bg-green-700 shadow-lg"
                       >
                         <GraduationCap className="h-6 w-6" />
                         <span className="text-lg">Instructor</span>
                       </Button>
                       <Button 
                         onClick={() => handleRoleSelect('admin')}
-                        className="flex items-center justify-center space-x-3 h-16 bg-orange-600 hover:bg-orange-700"
+                        className="flex items-center justify-center space-x-3 h-16 bg-orange-600 hover:bg-orange-700 shadow-lg"
                       >
                         <UserCog className="h-6 w-6" />
                         <span className="text-lg">Admin</span>
@@ -516,12 +526,12 @@ const Index = () => {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
               {features.map((feature, index) => (
-                <Card key={index} className="group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 hover:bg-blue-100 hover:text-blue-700 dark:hover:bg-blue-900/20 dark:hover:text-blue-400 bg-white/80 dark:bg-gray-700/80 backdrop-blur">
+                <Card key={index} className="group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-2 hover:bg-blue-50 dark:hover:bg-blue-900/20 bg-white/80 dark:bg-gray-700/80 backdrop-blur border-0 shadow-md">
                   <CardContent className="p-6 text-center">
-                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-nu-primary to-nu-secondary rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                    <div className="mx-auto w-16 h-16 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-lg">
                       <feature.icon className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-xl font-semibold dark:text-white mb-2">{feature.title}</h3>
+                    <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">{feature.title}</h3>
                     <p className="text-gray-600 dark:text-gray-300">
                       {feature.description}
                     </p>
@@ -532,40 +542,49 @@ const Index = () => {
           </div>
         </section>
 
-        {/* Stats Section */}
-        <section className="py-20 bg-gradient-to-r from-nu-primary to-nu-secondary text-white relative z-10">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Enhanced Professional Stats Section */}
+        <section className="py-20 bg-gradient-to-r from-blue-500 to-blue-600 text-white relative z-10 shadow-2xl">
+          <div className="absolute inset-0 bg-blue-600/90"></div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                Trusted by Thousands
+              </h2>
+              <p className="text-xl text-blue-100">
+                Join our growing community of learners and educators
+              </p>
+            </div>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-              <div>
-                <div className="text-4xl font-bold mb-2">1,200+</div>
-                <div className="text-orange-100">Active Students</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 shadow-lg">
+                <div className="text-4xl md:text-5xl font-bold mb-2">1,200+</div>
+                <div className="text-blue-100 text-lg">Active Students</div>
               </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">150+</div>
-                <div className="text-orange-100">Expert Instructors</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 shadow-lg">
+                <div className="text-4xl md:text-5xl font-bold mb-2">150+</div>
+                <div className="text-blue-100 text-lg">Expert Instructors</div>
               </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">45+</div>
-                <div className="text-orange-100">Courses Available</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 shadow-lg">
+                <div className="text-4xl md:text-5xl font-bold mb-2">45+</div>
+                <div className="text-blue-100 text-lg">Courses Available</div>
               </div>
-              <div>
-                <div className="text-4xl font-bold mb-2">98%</div>
-                <div className="text-orange-100">Success Rate</div>
+              <div className="bg-white/10 backdrop-blur rounded-xl p-6 shadow-lg">
+                <div className="text-4xl md:text-5xl font-bold mb-2">98%</div>
+                <div className="text-blue-100 text-lg">Success Rate</div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* Footer */}
-        <footer className="bg-blue-900 text-white py-12 relative z-10">
+        {/* Enhanced Footer */}
+        <footer className="bg-gray-900 text-white py-12 relative z-10">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
               <div>
-                <div className="flex items-center space-x-2 mb-4">
+                <div className="flex items-center space-x-3 mb-4">
                   <img 
-                    src="/api/placeholder/32/32?text=DIU" 
+                    src="/lovable-uploads/9a79b082-5152-4def-b442-6661e4117873.png" 
                     alt="Daffodil International University Logo" 
-                    className="h-8 w-8 rounded-full"
+                    className="h-10 w-10 rounded-full"
                   />
                   <h3 className="text-xl font-bold">Daffodil International University LMS</h3>
                 </div>
