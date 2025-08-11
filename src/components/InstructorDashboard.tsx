@@ -1,454 +1,375 @@
+
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   BookOpen, 
-  Calendar, 
-  Clock, 
+  Users, 
+  GraduationCap, 
   FileText, 
-  Award,
-  User,
-  LogOut,
-  GraduationCap,
-  Menu,
-  Search,
-  Home,
-  Settings,
+  Calendar,
+  Clock,
   Plus,
-  Edit
+  BarChart3,
+  Settings,
+  Menu,
+  Bell,
+  Search,
+  ChevronRight,
+  TrendingUp,
+  Award,
+  BookMarked,
+  ClipboardList,
+  LogOut
 } from "lucide-react";
-import ExamManager from './ExamManager';
-import InstructorCreateExam from './InstructorCreateExam';
-import InstructorManageExams from './InstructorManageExams';
+import { useToast } from "@/hooks/use-toast";
+import AssignmentManagementPage from './AssignmentManagementPage';
 import InstructorCourseListPage from './InstructorCourseListPage';
 import GradeManagementPage from './GradeManagementPage';
-import AssignmentManagementPage from './AssignmentManagementPage';
+import CreateExamPage from './CreateExamPage';
+import ManageExamsPage from './ManageExamsPage';
+import CreateCourseModal from './CreateCourseModal';
 
 interface InstructorDashboardProps {
-  user: { role: string; name: string };
+  user: {
+    role: string;
+    name: string;
+  };
   onLogout: () => void;
 }
 
 const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogout }) => {
-  const [showProfile, setShowProfile] = useState(false);
-  const [currentView, setCurrentView] = useState<string>('dashboard');
-  const [selectedExam, setSelectedExam] = useState<any>(null);
+  const { toast } = useToast();
+  const [currentPage, setCurrentPage] = useState('dashboard');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [courses, setCourses] = useState([
+    {
+      id: 1,
+      name: "Advanced Mathematics",
+      code: "MATH301",
+      instructor: "Dr. Smith",
+      department: "Mathematics",
+      credits: 4,
+      semester: "Fall 2024",
+      description: "A comprehensive study of advanced mathematical concepts including calculus, differential equations, and linear algebra.",
+      studentsEnrolled: 42,
+      image: "/lovable-uploads/9a79b082-5152-4def-b442-6661e4117873.png"
+    },
+    {
+      id: 2,
+      name: "Computer Science Fundamentals",
+      code: "CS101",
+      instructor: "Prof. Johnson",
+      department: "Computer Science",
+      credits: 3,
+      semester: "Fall 2024",
+      description: "Introduction to core computer science concepts, data structures, and basic programming paradigms.",
+      studentsEnrolled: 68,
+      image: "/lovable-uploads/9a79b082-5152-4def-b442-6661e4117873.png"
+    }
+  ]);
 
-  // Dummy data for instructor dashboard
-  const courses = [
-    { id: 1, name: "Advanced Mathematics", code: "MATH301", students: 45, assignments: 8, exams: 3 },
-    { id: 2, name: "Linear Algebra", code: "MATH201", students: 38, assignments: 6, exams: 2 },
-    { id: 3, name: "Calculus II", code: "MATH102", students: 52, assignments: 10, exams: 4 }
+  const stats = [
+    {
+      title: "Active Courses",
+      value: courses.length.toString(),
+      change: "+2 from last semester",
+      icon: BookOpen,
+      color: "text-blue-600"
+    },
+    {
+      title: "Total Students",
+      value: "245",
+      change: "+12 from last month", 
+      icon: Users,
+      color: "text-green-600"
+    },
+    {
+      title: "Pending Assignments",
+      value: "18",
+      change: "5 due this week",
+      icon: FileText,
+      color: "text-orange-600"
+    },
+    {
+      title: "Average Grade",
+      value: "82.5%",
+      change: "+3.2% from last semester",
+      icon: TrendingUp,
+      color: "text-purple-600"
+    }
   ];
 
-  const recentActivity = [
-    { id: 1, action: "New assignment submitted", course: "MATH301", time: "2 hours ago", type: "assignment" },
-    { id: 2, action: "Exam completed by 28 students", course: "MATH201", time: "1 day ago", type: "exam" },
-    { id: 3, action: "Course material uploaded", course: "MATH102", time: "2 days ago", type: "material" }
+  const quickActions = [
+    {
+      title: "Create Course",
+      description: "Add new course with unique code",
+      icon: Plus,
+      action: () => {},
+      color: "bg-indigo-500",
+      isModal: true
+    },
+    {
+      title: "Create Assignment",
+      description: "Add new assignment for your courses",
+      icon: ClipboardList,
+      action: () => setCurrentPage('assignments'),
+      color: "bg-blue-500"
+    },
+    {
+      title: "Create Exam",
+      description: "Schedule new exam or quiz",
+      icon: FileText,
+      action: () => setCurrentPage('create-exam'),
+      color: "bg-green-500"
+    },
+    {
+      title: "Manage Exams",
+      description: "View and edit existing exams",
+      icon: BookMarked,
+      action: () => setCurrentPage('manage-exams'),
+      color: "bg-purple-500"
+    },
+    {
+      title: "Grade Students",
+      description: "Review and update student grades",
+      icon: Award,
+      action: () => setCurrentPage('grades'),
+      color: "bg-orange-500"
+    }
   ];
 
-  const handleNavigateToExams = () => {
-    setCurrentView('exams');
+  const recentActivities = [
+    {
+      id: 1,
+      type: "assignment",
+      title: "New assignment submitted",
+      description: "John Doe submitted Calculus Problem Set 5",
+      time: "2 hours ago",
+      course: "MATH301"
+    },
+    {
+      id: 2,
+      type: "exam",
+      title: "Exam scheduled",
+      description: "Midterm exam for Linear Algebra scheduled",
+      time: "1 day ago",
+      course: "MATH201"
+    },
+    {
+      id: 3,
+      type: "grade",
+      title: "Grades updated",
+      description: "Published grades for Quiz 3",
+      time: "2 days ago", 
+      course: "MATH102"
+    }
+  ];
+
+  const navigationItems = [
+    {
+      title: "Dashboard",
+      icon: BarChart3,
+      page: "dashboard"
+    },
+    {
+      title: "My Courses",
+      icon: BookOpen,
+      page: "courses"
+    },
+    {
+      title: "Assignments",
+      icon: ClipboardList,
+      page: "assignments"
+    },
+    {
+      title: "Grades",
+      icon: Award,
+      page: "grades"
+    },
+    {
+      title: "Settings",
+      icon: Settings,
+      page: "settings"
+    }
+  ];
+
+  const handleNavigation = (page: string) => {
+    setCurrentPage(page);
   };
 
-  const handleCreateExam = () => {
-    setCurrentView('create-exam');
+  const handleCourseCreated = (newCourse: any) => {
+    setCourses(prev => [...prev, newCourse]);
   };
 
-  const handleManageExams = () => {
-    setCurrentView('manage-exams');
+  const renderCurrentPage = () => {
+    switch(currentPage) {
+      case 'assignments':
+        return <AssignmentManagementPage onBack={() => setCurrentPage('dashboard')} />;
+      case 'courses':
+        return <InstructorCourseListPage 
+          user={user} 
+          onBack={() => setCurrentPage('dashboard')}
+          courses={courses}
+        />;
+      case 'grades':
+        return <GradeManagementPage onBack={() => setCurrentPage('dashboard')} />;
+      case 'create-exam':
+        return <CreateExamPage onBack={() => setCurrentPage('dashboard')} />;
+      case 'manage-exams':
+        return <ManageExamsPage onBack={() => setCurrentPage('dashboard')} />;
+      default:
+        return renderDashboard();
+    }
   };
 
-  const handleBackToDashboard = () => {
-    setCurrentView('dashboard');
-    setSelectedExam(null);
-  };
-
-  const handleEditExam = (exam: any) => {
-    setSelectedExam(exam);
-    setCurrentView('edit-exam');
-  };
-
-  const handleMyCourses = () => {
-    setCurrentView('my-courses');
-  };
-
-  const handleGrades = () => {
-    setCurrentView('grades');
-  };
-
-  const handleAssignments = () => {
-    setCurrentView('assignments');
-  };
-
-  // Render different views based on currentView
-  if (currentView === 'exams') {
-    return (
-      <ExamManager
-        onBack={handleBackToDashboard}
-        userRole="instructor"
-        darkMode={false}
-      />
-    );
-  }
-
-  if (currentView === 'create-exam') {
-    return (
-      <InstructorCreateExam
-        onBack={handleBackToDashboard}
-        onExamCreated={handleBackToDashboard}
-      />
-    );
-  }
-
-  if (currentView === 'manage-exams') {
-    return (
-      <InstructorManageExams
-        onBack={handleBackToDashboard}
-        onEditExam={handleEditExam}
-      />
-    );
-  }
-
-  if (currentView === 'my-courses') {
-    return (
-      <InstructorCourseListPage
-        user={user}
-        onBack={handleBackToDashboard}
-      />
-    );
-  }
-
-  if (currentView === 'grades') {
-    return (
-      <GradeManagementPage
-        onBack={handleBackToDashboard}
-      />
-    );
-  }
-
-  if (currentView === 'assignments') {
-    return (
-      <AssignmentManagementPage
-        onBack={handleBackToDashboard}
-      />
-    );
-  }
-
-  if (currentView === 'edit-exam' && selectedExam) {
-    return (
-      <InstructorCreateExam
-        onBack={() => setCurrentView('manage-exams')}
-        onExamCreated={() => setCurrentView('manage-exams')}
-        editingExam={selectedExam}
-      />
-    );
-  }
-
-  const SidebarContent = () => (
-    <div className="p-4 space-y-6">
-      <div className="flex items-center space-x-3 mb-6">
-        <GraduationCap className="h-8 w-8 text-green-600" />
-        <div>
-          <h2 className="font-semibold text-gray-900 dark:text-white">Instructor Portal</h2>
-          <p className="text-sm text-gray-500 dark:text-gray-400">Daffodil International University</p>
-        </div>
-      </div>
-      
-      <nav className="space-y-2">
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={() => setCurrentView('dashboard')}
-        >
-          <Home className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Dashboard</span>
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={handleMyCourses}
-        >
-          <BookOpen className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">My Courses</span>
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={handleNavigateToExams}
-        >
-          <Clock className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Exam Management</span>
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={handleAssignments}
-        >
-          <FileText className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Assignments</span>
-        </Button>
-        
-        <Button 
-          variant="ghost" 
-          className="w-full justify-start hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 text-gray-700 dark:text-gray-200 transition-all duration-200"
-          onClick={handleGrades}
-        >
-          <Award className="h-4 w-4 mr-2 flex-shrink-0" />
-          <span className="truncate">Grades</span>
-        </Button>
-      </nav>
-    </div>
-  );
-
-  const ProfileDropdown = () => (
-    <Card className="w-80 p-4 shadow-lg">
-      <div className="flex items-center space-x-3 mb-4">
-        <Avatar className="h-12 w-12">
-          <AvatarImage src="/api/placeholder/48/48" />
-          <AvatarFallback>SW</AvatarFallback>
-        </Avatar>
-        <div>
-          <h3 className="font-semibold">{user.name}</h3>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Employee ID: EMP001</p>
-          <p className="text-sm text-gray-600 dark:text-gray-400">Department: Mathematics</p>
-        </div>
-      </div>
-      <div className="space-y-2 text-sm">
-        <div><strong>Email:</strong> sarah.wilson@diu.edu.bd</div>
-        <div><strong>Phone:</strong> +880 1234567890</div>
-        <div><strong>Office:</strong> Room 301, Building A</div>
-        <div><strong>Office Hours:</strong> Mon-Wed 2:00-4:00 PM</div>
-      </div>
-      <Button variant="outline" className="w-full mt-4" onClick={() => setShowProfile(false)}>
-        Close
-      </Button>
-    </Card>
-  );
-
-  return (
+  const renderDashboard = () => (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
-      <header className="bg-green-100 dark:bg-green-900/30 shadow-sm border-b sticky top-0 z-50">
+      <header className="bg-white shadow-sm border-b sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
+          <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
-              {/* Mobile Sidebar Toggle */}
-              <Sheet>
-                <SheetTrigger asChild>
-                  <Button variant="ghost" size="sm" className="md:hidden">
-                    <Menu className="h-5 w-5" />
-                  </Button>
-                </SheetTrigger>
-                <SheetContent side="left" className="w-80 bg-white dark:bg-gray-800">
-                  <SidebarContent />
-                </SheetContent>
-              </Sheet>
-
-              <div className="hidden md:flex items-center space-x-3">
-                <GraduationCap className="h-8 w-8 text-green-600" />
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden"
+              >
+                <Menu className="h-5 w-5" />
+              </Button>
+              <div className="flex items-center space-x-3">
+                <GraduationCap className="h-8 w-8 text-blue-600" />
                 <div>
-                  <h1 className="text-xl font-semibold text-gray-900 dark:text-white">Instructor Dashboard</h1>
-                  <p className="text-sm text-gray-500 dark:text-gray-400">Welcome back, {user.name}</p>
+                  <h1 className="text-xl font-semibold text-gray-900">Instructor Portal</h1>
+                  <p className="text-sm text-gray-500">Welcome back, {user.name}</p>
                 </div>
               </div>
             </div>
-
+            
             <div className="flex items-center space-x-4">
-              {/* Search */}
-              <div className="relative hidden sm:block">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input 
-                  placeholder="Search..." 
-                  className="pl-10 w-64"
-                />
+              <div className="hidden md:flex items-center space-x-3 text-sm text-gray-600">
+                <span>Associate Professor</span>
+                <span>•</span>
+                <span>Mathematics Department</span>
+                <span>•</span>
+                <span>ID: EMP-2024-001</span>
               </div>
-
-              {/* Profile */}
-              <div className="relative">
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
-                  className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400"
-                  onClick={() => setShowProfile(!showProfile)}
-                >
-                  <Avatar className="h-6 w-6">
-                    <AvatarImage src="/api/placeholder/24/24" />
-                    <AvatarFallback>SW</AvatarFallback>
-                  </Avatar>
-                </Button>
-                {showProfile && (
-                  <div className="absolute right-0 top-full mt-2 z-50">
-                    <ProfileDropdown />
-                  </div>
-                )}
-              </div>
-
-              <Button variant="outline" size="sm" onClick={onLogout} className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onLogout}
+                className="text-gray-600 hover:text-gray-900"
+              >
                 <LogOut className="h-4 w-4 mr-2" />
-                Logout
+                <span className="hidden sm:inline">Logout</span>
               </Button>
+              <Avatar>
+                <AvatarImage src="/api/placeholder/40/40" />
+                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+              </Avatar>
             </div>
           </div>
         </div>
       </header>
 
       <div className="flex">
-        {/* Desktop Sidebar */}
-        <aside className="hidden md:block w-64 bg-white dark:bg-gray-800 shadow-sm min-h-screen">
-          <SidebarContent />
+        {/* Sidebar */}
+        <aside className={`${sidebarOpen ? 'w-64' : 'w-0 lg:w-16'} transition-all duration-300 bg-white border-r border-gray-200 min-h-screen`}>
+          <nav className="mt-8 px-4">
+            <div className="space-y-2">
+              {navigationItems.map((item) => (
+                <button
+                  key={item.page}
+                  onClick={() => handleNavigation(item.page)}
+                  className={`w-full flex items-center px-4 py-3 text-left rounded-lg transition-colors ${
+                    currentPage === item.page 
+                      ? 'bg-blue-50 text-blue-600 border-r-2 border-blue-600' 
+                      : 'text-gray-700 hover:bg-gray-50'
+                  }`}
+                >
+                  <item.icon className="h-5 w-5 mr-3" />
+                  <span className={`${!sidebarOpen && 'lg:hidden'}`}>{item.title}</span>
+                </button>
+              ))}
+            </div>
+          </nav>
         </aside>
 
         {/* Main Content */}
         <main className="flex-1 p-6">
-          <div className="space-y-6">
-            {/* Quick Stats */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
-              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Total Courses</CardTitle>
-                  <BookOpen className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{courses.length}</div>
-                  <p className="text-xs text-muted-foreground">Active this semester</p>
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+            {stats.map((stat, index) => (
+              <Card key={index}>
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-sm font-medium text-gray-500">{stat.title}</p>
+                      <p className="text-2xl font-bold">{stat.value}</p>
+                      <p className="text-xs text-gray-500 mt-1">{stat.change}</p>
+                    </div>
+                    <stat.icon className={`h-8 w-8 ${stat.color}`} />
+                  </div>
                 </CardContent>
               </Card>
-              
-              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105">
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">My Students</CardTitle>
-                  <User className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{courses.reduce((sum, course) => sum + course.students, 0)}</div>
-                  <p className="text-xs text-muted-foreground">Across all courses</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105" onClick={handleNavigateToExams}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">My Exams</CardTitle>
-                  <Clock className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">{JSON.parse(localStorage.getItem('instructorExams') || '[]').length}</div>
-                  <p className="text-xs text-muted-foreground">Total created</p>
-                </CardContent>
-              </Card>
-              
-              <Card className="hover:bg-green-100 hover:text-green-700 dark:hover:bg-green-900/20 dark:hover:text-green-400 cursor-pointer transition-all duration-200 hover:shadow-lg transform hover:scale-105" onClick={handleGrades}>
-                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                  <CardTitle className="text-sm font-medium">Pending Grades</CardTitle>
-                  <Award className="h-4 w-4 text-muted-foreground" />
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">12</div>
-                  <p className="text-xs text-muted-foreground">Assignments to grade</p>
-                </CardContent>
-              </Card>
-            </div>
+            ))}
+          </div>
 
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Quick Actions */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">Quick Actions</CardTitle>
+                <CardTitle>Quick Actions</CardTitle>
+                <CardDescription>Frequently used tools and features</CardDescription>
               </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                  <Button 
-                    className="h-20 flex flex-col justify-center items-center space-y-2 bg-green-600 hover:bg-green-700"
-                    onClick={handleCreateExam}
-                  >
-                    <Plus className="h-6 w-6" />
-                    <span>Create Exam</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="h-20 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handleManageExams}
-                  >
-                    <Edit className="h-6 w-6" />
-                    <span>Manage Exams</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="h-20 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handleAssignments}
-                  >
-                    <FileText className="h-6 w-6" />
-                    <span>Manage Assignments</span>
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    className="h-20 flex flex-col justify-center items-center space-y-2 hover:bg-green-100 hover:text-green-700"
-                    onClick={handleGrades}
-                  >
-                    <Award className="h-6 w-6" />
-                    <span>Grade Submissions</span>
-                  </Button>
-                </div>
+              <CardContent className="space-y-4">
+                {quickActions.map((action, index) => (
+                  <div key={index} className="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
+                    <div className={`p-3 rounded-lg ${action.color} mr-4`}>
+                      <action.icon className="h-5 w-5 text-white" />
+                    </div>
+                    <div className="flex-1">
+                      <h3 className="font-medium">{action.title}</h3>
+                      <p className="text-sm text-gray-500">{action.description}</p>
+                    </div>
+                    {action.isModal ? (
+                      <CreateCourseModal onCourseCreated={handleCourseCreated} />
+                    ) : (
+                      <div onClick={action.action}>
+                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    )}
+                  </div>
+                ))}
               </CardContent>
             </Card>
 
-            {/* My Courses */}
+            {/* Recent Activities */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg font-semibold">My Courses</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  {courses.map((course) => (
-                    <Card key={course.id} className="hover:shadow-md transition-shadow cursor-pointer">
-                      <CardContent className="p-4">
-                        <div className="flex items-start justify-between mb-2">
-                          <div>
-                            <h3 className="font-medium text-sm">{course.name}</h3>
-                            <p className="text-xs text-gray-500">{course.code}</p>
-                          </div>
-                          <Badge variant="outline" className="text-xs">
-                            {course.students} students
-                          </Badge>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 text-xs text-gray-600">
-                          <div>Assignments: {course.assignments}</div>
-                          <div>Exams: {course.exams}</div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Recent Activity */}
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg font-semibold">Recent Activity</CardTitle>
+                <CardTitle>Recent Activities</CardTitle>
+                <CardDescription>Latest updates from your courses</CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
-                  {recentActivity.map((activity) => (
-                    <div key={activity.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                          {activity.type === 'assignment' && <FileText className="h-4 w-4 text-green-600" />}
-                          {activity.type === 'exam' && <Clock className="h-4 w-4 text-green-600" />}
-                          {activity.type === 'material' && <BookOpen className="h-4 w-4 text-green-600" />}
-                        </div>
-                        <div>
-                          <h4 className="font-medium text-sm">{activity.action}</h4>
-                          <p className="text-xs text-gray-500">{activity.course}</p>
+                  {recentActivities.map((activity) => (
+                    <div key={activity.id} className="flex items-start space-x-4 p-3 rounded-lg hover:bg-gray-50">
+                      <div className="flex-shrink-0">
+                        <div className="w-2 h-2 bg-blue-600 rounded-full mt-2"></div>
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{activity.title}</h4>
+                        <p className="text-sm text-gray-600">{activity.description}</p>
+                        <div className="flex items-center mt-1 space-x-2">
+                          <Badge variant="secondary">{activity.course}</Badge>
+                          <span className="text-xs text-gray-500">{activity.time}</span>
                         </div>
                       </div>
-                      <span className="text-xs text-gray-500">{activity.time}</span>
                     </div>
                   ))}
                 </div>
@@ -457,23 +378,10 @@ const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogou
           </div>
         </main>
       </div>
-
-      {/* Footer */}
-      <footer className="bg-green-900 text-white py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-2 mb-4 md:mb-0">
-              <GraduationCap className="h-6 w-6" />
-              <span className="font-medium">Daffodil International University LMS</span>
-            </div>
-            <div className="text-sm text-green-200">
-              &copy; 2024 Daffodil International University. All rights reserved.
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   );
+
+  return renderCurrentPage();
 };
 
 export default InstructorDashboard;
