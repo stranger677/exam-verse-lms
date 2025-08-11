@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -27,10 +26,11 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import AssignmentManagementPage from './AssignmentManagementPage';
-import CourseListPage from './CourseListPage';
+import InstructorCourseListPage from './InstructorCourseListPage';
 import GradeManagementPage from './GradeManagementPage';
 import CreateExamPage from './CreateExamPage';
 import ManageExamsPage from './ManageExamsPage';
+import CreateCourseModal from './CreateCourseModal';
 
 interface InstructorData {
   id: string;
@@ -46,8 +46,33 @@ const EnhancedInstructorDashboard: React.FC = () => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [courses, setCourses] = useState([
+    {
+      id: 1,
+      name: "Advanced Mathematics",
+      code: "MATH301",
+      instructor: "Dr. Smith",
+      department: "Mathematics",
+      credits: 4,
+      semester: "Fall 2024",
+      description: "A comprehensive study of advanced mathematical concepts including calculus, differential equations, and linear algebra.",
+      studentsEnrolled: 42,
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
+    },
+    {
+      id: 2,
+      name: "Computer Science Fundamentals",
+      code: "CS101",
+      instructor: "Prof. Johnson",
+      department: "Computer Science",
+      credits: 3,
+      semester: "Fall 2024",
+      description: "Introduction to core computer science concepts, data structures, and basic programming paradigms.",
+      studentsEnrolled: 68,
+      image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
+    }
+  ]);
   
-  // Mock instructor data - in real app, this would come from authentication
   const [instructorData, setInstructorData] = useState<InstructorData>({
     id: "INS001",
     name: "Dr. Sarah Wilson",
@@ -61,7 +86,7 @@ const EnhancedInstructorDashboard: React.FC = () => {
   const stats = [
     {
       title: "Active Courses",
-      value: "6",
+      value: courses.length.toString(),
       change: "+2 from last semester",
       icon: BookOpen,
       color: "text-blue-600"
@@ -90,6 +115,14 @@ const EnhancedInstructorDashboard: React.FC = () => {
   ];
 
   const quickActions = [
+    {
+      title: "Create Course",
+      description: "Add new course with unique code",
+      icon: Plus,
+      action: () => {}, // Will be handled by modal
+      color: "bg-indigo-500",
+      isModal: true
+    },
     {
       title: "Create Assignment",
       description: "Add new assignment for your courses",
@@ -179,12 +212,20 @@ const EnhancedInstructorDashboard: React.FC = () => {
     setCurrentPage(page);
   };
 
+  const handleCourseCreated = (newCourse: any) => {
+    setCourses(prev => [...prev, newCourse]);
+  };
+
   const renderCurrentPage = () => {
     switch(currentPage) {
       case 'assignments':
         return <AssignmentManagementPage onBack={() => setCurrentPage('dashboard')} />;
       case 'courses':
-        return <CourseListPage user={{ role: 'instructor', name: instructorData.name }} onBack={() => setCurrentPage('dashboard')} />;
+        return <InstructorCourseListPage 
+          user={{ role: 'instructor', name: instructorData.name }} 
+          onBack={() => setCurrentPage('dashboard')}
+          courses={courses}
+        />;
       case 'grades':
         return <GradeManagementPage onBack={() => setCurrentPage('dashboard')} />;
       case 'create-exam':
@@ -289,11 +330,7 @@ const EnhancedInstructorDashboard: React.FC = () => {
               </CardHeader>
               <CardContent className="space-y-4">
                 {quickActions.map((action, index) => (
-                  <div
-                    key={index}
-                    onClick={action.action}
-                    className="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors"
-                  >
+                  <div key={index} className="flex items-center p-4 border rounded-lg hover:bg-gray-50 cursor-pointer transition-colors">
                     <div className={`p-3 rounded-lg ${action.color} mr-4`}>
                       <action.icon className="h-5 w-5 text-white" />
                     </div>
@@ -301,7 +338,13 @@ const EnhancedInstructorDashboard: React.FC = () => {
                       <h3 className="font-medium">{action.title}</h3>
                       <p className="text-sm text-gray-500">{action.description}</p>
                     </div>
-                    <ChevronRight className="h-5 w-5 text-gray-400" />
+                    {action.isModal ? (
+                      <CreateCourseModal onCourseCreated={handleCourseCreated} />
+                    ) : (
+                      <div onClick={action.action}>
+                        <ChevronRight className="h-5 w-5 text-gray-400" />
+                      </div>
+                    )}
                   </div>
                 ))}
               </CardContent>

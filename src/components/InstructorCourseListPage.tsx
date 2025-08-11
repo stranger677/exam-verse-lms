@@ -15,6 +15,7 @@ import { useToast } from "@/hooks/use-toast";
 interface InstructorCourseListPageProps {
   user: { role: string; name: string };
   onBack: () => void;
+  courses?: any[];
 }
 
 interface Student {
@@ -34,14 +35,14 @@ interface CourseMaterial {
   size: string;
 }
 
-const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ user, onBack }) => {
+const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ user, onBack, courses: propCourses }) => {
   const { toast } = useToast();
   const [selectedCourse, setSelectedCourse] = useState<any>(null);
   const [showAddStudent, setShowAddStudent] = useState(false);
   const [showUploadMaterial, setShowUploadMaterial] = useState(false);
   const [newStudentEmail, setNewStudentEmail] = useState('');
 
-  const courses = [
+  const defaultCourses = [
     {
       id: 1,
       name: "Advanced Mathematics",
@@ -79,6 +80,8 @@ const InstructorCourseListPage: React.FC<InstructorCourseListPageProps> = ({ use
       image: "/lovable-uploads/1444a92e-ef94-4f82-abba-e7016e0dfd5d.png"
     }
   ];
+
+  const courses = propCourses || defaultCourses;
 
   const [courseStudents, setCourseStudents] = useState<{[key: number]: Student[]}>({
     1: [
