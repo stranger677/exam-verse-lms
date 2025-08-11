@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -40,9 +39,28 @@ interface InstructorDashboardProps {
     name: string;
   };
   onLogout: () => void;
+  onNavigateToCourses?: () => void;
+  onNavigateToAssignments?: () => void;
+  onNavigateToGradeBreakdown?: (course: any) => void;
+  onStartExam?: (exam: any) => void;
+  onViewExamDetails?: (exam: any) => void;
+  onEnterCourse?: (course: any) => void;
+  darkMode?: boolean;
+  setDarkMode?: (value: boolean) => void;
 }
 
-const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ user, onLogout }) => {
+const InstructorDashboard: React.FC<InstructorDashboardProps> = ({ 
+  user, 
+  onLogout,
+  onNavigateToCourses,
+  onNavigateToAssignments,
+  onNavigateToGradeBreakdown,
+  onStartExam,
+  onViewExamDetails,
+  onEnterCourse,
+  darkMode,
+  setDarkMode
+}) => {
   const { toast } = useToast();
   const [currentPage, setCurrentPage] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(true);
